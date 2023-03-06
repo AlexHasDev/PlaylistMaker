@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="buttonPad">17dp</dimen>
+    <dimen name="cornerButton">16dp</dimen>
+    <dimen name="iconSize">25dp</dimen>
+    <dimen name="iconPad">12dp</dimen>
+</resources>
