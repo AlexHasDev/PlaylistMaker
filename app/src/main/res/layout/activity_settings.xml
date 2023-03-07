@@ -8,7 +8,7 @@
     android:paddingTop="14dp"
     android:paddingStart="16dp"
     android:orientation="vertical"
-    android:paddingRight="20dp"
+    android:paddingEnd="16dp"
     tools:ignore="RtlSymmetry">
 
     <LinearLayout
@@ -19,8 +19,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_arrow_back"
             android:layout_gravity="center_vertical"/>
 
 
@@ -34,93 +33,53 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="61dp">
+        android:layout_marginTop="42dp"
+        android:paddingVertical="21dp"
+        android:text="@string/darkTheme"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:drawableEndCompat="@drawable/ic_share"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/darkTheme"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
-
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="42dp">
+        android:layout_marginTop="22dp"
+        android:paddingVertical="21dp"
+        android:text="@string/share"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:drawableEndCompat="@drawable/ic_share"
+        />
 
-        <TextView
-            android:layout_width="300sp"
-            android:layout_height="wrap_content"
-            android:text="@string/share"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_baseline_share_24"
-            android:layout_marginLeft="@dimen/iconPad"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="42dp">
-
-        <TextView
-            android:layout_width="300sp"
-            android:layout_height="wrap_content"
-            android:text="@string/support"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_baseline_support_agent_24"
-            android:layout_marginLeft="@dimen/iconPad"/>
+        android:layout_marginTop="22dp"
+        android:paddingVertical="21dp"
+        android:text="@string/support"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:drawableEndCompat="@drawable/ic_support"
+        />
 
 
-    </LinearLayout>
 
-    <LinearLayout
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="42dp">
+        android:layout_marginTop="22dp"
+        android:paddingVertical="21dp"
+        android:text="@string/termsOfuse"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:drawableEndCompat="@drawable/ic_arrow_forward"
+        />
 
-        <TextView
-            android:layout_width="300sp"
-            android:layout_height="wrap_content"
-            android:text="@string/termsOfuse"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_baseline_arrow_forward_ios_24"
-            android:layout_marginLeft="@dimen/iconPad"/>
-
-
-    </LinearLayout>
 
 
 

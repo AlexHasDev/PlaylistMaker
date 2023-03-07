@@ -4,4 +4,5 @@
     <dimen name="cornerButton">16dp</dimen>
     <dimen name="iconSize">25dp</dimen>
     <dimen name="iconPad">12dp</dimen>
+    <dimen name="textSizeMenu">22sp</dimen>
 </resources>
