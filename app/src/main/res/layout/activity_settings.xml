@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    android:paddingTop="14dp"
+    android:paddingHorizontal="16dp"
+    android:orientation="vertical"
+    tools:ignore="RtlSymmetry">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_gravity="center_vertical"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:textSize="22sp"
+            android:textColor="@color/almostBlack"
+            android:layout_marginStart="28dp"/>
+
+    </LinearLayout>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:paddingVertical="@dimen/padding_vertical_settings_menu"
+        android:text="@string/darkTheme"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_settings_menu"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_vertical_settings_menu"
+        android:text="@string/share"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_settings_menu"
+        app:drawableEndCompat="@drawable/ic_share"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_vertical_settings_menu"
+        android:text="@string/support"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_settings_menu"
+        app:drawableEndCompat="@drawable/ic_support"
+        />
+
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_vertical_settings_menu"
+        android:text="@string/termsOfuse"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_settings_menu"
+        app:drawableEndCompat="@drawable/ic_arrow_forward"
+        />
+
+
+
+
+</LinearLayout>
