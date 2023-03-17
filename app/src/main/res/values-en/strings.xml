@@ -8,4 +8,6 @@
     <string name="share">Share app</string>
     <string name="support">Send to support</string>
     <string name="termsOfuse">Terms of use</string>
+    <string name="share_title">"Share with: "</string>
+    <string name="message_support">Thanks to the developers and developers for a cool app!</string>
 </resources>

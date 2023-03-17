@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity"
-    android:paddingTop="14dp"
-    android:paddingHorizontal="16dp"
     android:orientation="vertical"
+    style="@style/settings_menu_background"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="14dp"
+    tools:context=".SettingsActivity"
     tools:ignore="RtlSymmetry">
 
     <LinearLayout
@@ -16,66 +17,48 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_back"
-            android:layout_gravity="center_vertical"/>
+            style="@style/settings_arrow_style"
+            android:src="@drawable/ic_arrow_back" />
 
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/settings"
-            android:textSize="22sp"
-            android:textColor="@color/almostBlack"
-            android:layout_marginStart="28dp"/>
+            android:layout_marginStart="28dp"
+            style="@style/menu_title_style" />
 
     </LinearLayout>
 
     <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/textView_settings_menu"
         android:layout_marginTop="42dp"
+        android:filterTouchesWhenObscured="false"
+        android:fitsSystemWindows="false"
         android:paddingVertical="@dimen/padding_vertical_settings_menu"
         android:text="@string/darkTheme"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings_menu"
-        />
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/share"
+        style="@style/textView_settings_menu"
         android:paddingVertical="@dimen/padding_vertical_settings_menu"
         android:text="@string/share"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings_menu"
-        app:drawableEndCompat="@drawable/ic_share"
-        />
+        app:drawableEndCompat="@drawable/ic_share"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/sent_to_support"
+        style="@style/textView_settings_menu"
         android:paddingVertical="@dimen/padding_vertical_settings_menu"
         android:text="@string/support"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings_menu"
-        app:drawableEndCompat="@drawable/ic_support"
-        />
-
-
+        app:drawableEndCompat="@drawable/ic_support" />
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/terms_of_use"
+        style="@style/textView_settings_menu"
         android:paddingVertical="@dimen/padding_vertical_settings_menu"
         android:text="@string/termsOfuse"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings_menu"
-        app:drawableEndCompat="@drawable/ic_arrow_forward"
-        />
-
-
+        app:drawableEndCompat="@drawable/ic_arrow_forward" />
 
 
 </LinearLayout>
