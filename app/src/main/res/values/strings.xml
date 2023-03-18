@@ -7,4 +7,6 @@
     <string name="share">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
     <string name="termsOfuse">Пользовательское соглашение</string>
+    <string name="share_title">Поделиться с помощью:</string>
+    <string name="message_support">Спасибо разработчикам и разработчицам за крутое приложение!</string>
 </resources>
