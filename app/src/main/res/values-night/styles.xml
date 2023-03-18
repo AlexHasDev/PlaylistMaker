@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <style name="main_menu_button_style" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:backgroundTint">@color/design_default_color_background</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/almostBlack</item>
+        <item name="android:textSize">@dimen/textSizeMenu</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
+    <style name="textView_settings_menu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_settings_menu</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+<item name="drawableTint">@color/white</item>
+
+    </style>
+
+    <style name="main_menu_background">
+        <item name="android:background">@color/almostBlack</item>
+    </style>
+
+    <style name="settings_menu_background">
+        <item name="android:background">@color/almostBlack</item>
+    </style>
+
+    <style name="menu_title_style">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+
+    </style>
+
+    <style name="settings_arrow_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+
+    <style name="search_edit_text_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:background">@drawable/search_background_dark_theme</item>
+        <item name="android:drawableStart">@drawable/ic_search</item>
+        <item name="android:drawablePadding">9dp</item>
+        <item name="android:paddingStart">13dp</item>
+        <item name="android:textColorHint">@color/almostBlack</item>
+        <item name="android:textColor">@color/almostBlack</item>
+    </style>
+</resources>
