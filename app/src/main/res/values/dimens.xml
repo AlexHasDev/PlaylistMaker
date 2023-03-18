@@ -7,4 +7,5 @@
     <dimen name="textSizeMenu">22sp</dimen>
     <dimen name="text_size_settings_menu">16sp</dimen>
     <dimen name="padding_vertical_settings_menu">21dp</dimen>
+    <dimen name="main_icon_padding">10dp</dimen>
 </resources>

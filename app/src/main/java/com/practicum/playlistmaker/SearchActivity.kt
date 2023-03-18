@@ -11,7 +11,7 @@ import android.widget.ImageView
 
 class SearchActivity : AppCompatActivity() {
 
-    var countValue: String = ""
+    private var countValue: String = ""
     companion object {
         const val SEARCH_STATE = "SEARCH_STATE"
     }

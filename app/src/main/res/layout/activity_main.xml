@@ -33,7 +33,7 @@
         app:icon="@drawable/ic_search"
         app:iconGravity="textStart"
         app:iconTint="@color/almostBlack"
-        app:iconPadding="10dp" />
+        app:iconPadding="@dimen/main_icon_padding" />
 
     <Button
         android:id="@+id/media"
@@ -43,7 +43,7 @@
         app:icon="@drawable/ic_music"
         app:iconGravity="textStart"
         app:iconTint="@color/almostBlack"
-        app:iconPadding="10dp" />
+        app:iconPadding="@dimen/main_icon_padding" />
 
     <Button
         android:id="@+id/settings"
@@ -53,6 +53,6 @@
         app:icon="@drawable/ic_settings"
         app:iconGravity="textStart"
         app:iconTint="@color/almostBlack"
-        app:iconPadding="10dp" />
+        app:iconPadding="@dimen/main_icon_padding" />
 
 </LinearLayout>
