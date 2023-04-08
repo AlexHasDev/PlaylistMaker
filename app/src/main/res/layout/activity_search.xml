@@ -19,6 +19,7 @@
             style="@style/settings_arrow_style"
             android:src="@drawable/ic_arrow_back" />
 
+
         <TextView
             style="@style/menu_title_style"
             android:layout_marginStart="28dp"
