@@ -18,7 +18,7 @@
         <ImageView
             style="@style/settings_arrow_style"
             android:src="@drawable/ic_arrow_back" />
-
+фцуа
 
         <TextView
             style="@style/menu_title_style"
