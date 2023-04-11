@@ -21,7 +21,10 @@ class SearchRecyclerAdapter(
         var trackImage: ImageView = itemView.findViewById(R.id.song_image)
 
         fun bind(track: Track) {
-            Glide.with(itemView).load(track.artworkUrl100).transform(RoundedCorners(7))
+            Glide.with(itemView)
+                .load(track.artworkUrl100)
+                .placeholder(R.drawable.snake)
+                .transform(RoundedCorners(2))
                 .into(trackImage)
         }
     }
