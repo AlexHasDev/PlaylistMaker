@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 
 class SettingsActivity : AppCompatActivity() {
@@ -19,6 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         val share = findViewById<TextView>(R.id.share)
         val sendToSupport = findViewById<TextView>(R.id.sent_to_support)
         val termsOfUse = findViewById<TextView>(R.id.terms_of_use)
+        val arrowBack = findViewById<ImageView>(R.id.settings_arrow_back)
 
         val url = "https://practicum.yandex.ru/profile/android-developer/"
 
@@ -46,6 +48,11 @@ class SettingsActivity : AppCompatActivity() {
             val termsOfUseIntent = Intent(Intent.ACTION_VIEW)
             termsOfUseIntent.data = Uri.parse("https://yandex.ru/legal/practicum_offer/")
             startActivity(termsOfUseIntent)
+        }
+
+        arrowBack.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
 
     }
