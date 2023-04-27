@@ -10,4 +10,7 @@
     <string name="share_title">Поделиться с помощью:</string>
     <string name="message_support">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="dot">•</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="connect_problem">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="refresh_button">Обновить</string>
 </resources>
