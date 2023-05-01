@@ -30,7 +30,8 @@
 
     </LinearLayout>
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/theme_switcher"
         style="@style/textView_settings_menu"
         android:layout_marginTop="42dp"
         android:filterTouchesWhenObscured="false"

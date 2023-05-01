@@ -21,6 +21,7 @@ import com.practicum.playlistmaker.RecyclerSearch.SearchRecyclerAdapter
 import com.practicum.playlistmaker.retrofitSearch.ITunesApi
 import com.practicum.playlistmaker.retrofitSearch.Track
 import com.practicum.playlistmaker.retrofitSearch.TracksResponse
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,8 +33,9 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
 
     private var countValue: String = ""
+    lateinit var searchText: String
 
-
+    lateinit var interceptor: HttpLoggingInterceptor
     lateinit var searchRecycler: RecyclerView
     lateinit var results: ArrayList<Track>
     lateinit var placeholderText: TextView
@@ -42,6 +44,9 @@ class SearchActivity : AppCompatActivity() {
     lateinit var searchRefreshButton: Button
     lateinit var inputEditSearchText: EditText
     private lateinit var iTunesService: ITunesApi
+    lateinit var clearButton: ImageView
+    lateinit var arrowBack: ImageView
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,12 +54,12 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
 
-        val interceptor = HttpLoggingInterceptor()
+        interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-        val arrowBack = findViewById<ImageView>(R.id.search_arrow_back)
+        clearButton = findViewById(R.id.clearIcon)
+        arrowBack = findViewById(R.id.search_arrow_back)
 
         inputEditSearchText = findViewById(R.id.search_edit_text)
         placeholder = findViewById(R.id.placeholder_trackList)
@@ -128,14 +133,18 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    fun search() {
-        iTunesService.getSong(inputEditSearchText.text.toString().trim())
+    private fun search() {
+
+        if(inputEditSearchText.text.isNotEmpty())
+            searchText = inputEditSearchText.text.toString()
+
+        iTunesService.getSong(searchText.trim())
             .enqueue(object : Callback<TracksResponse> {
                 override fun onResponse(
                     call: Call<TracksResponse>,
                     response: Response<TracksResponse>
                 ) {
-                    if (inputEditSearchText.text.isNotEmpty()) {
+                    if (searchText.isNotEmpty()) {
                         when (response.code()) {
                             200 -> if (response.body()?.results!!.isNotEmpty()) {
                                 results.clear()
@@ -162,22 +171,22 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    fun setPlaceholder(searchResults: ArrayList<Track>, onConnect: Boolean) {
+    private fun setPlaceholder(searchResults: ArrayList<Track>, onConnect: Boolean) {
+        searchResults.clear()
         if (onConnect) {
-            searchResults.clear()
             searchRecycler.adapter = SearchRecyclerAdapter(results)
             placeholder.visibility = View.VISIBLE
             placeholderText.text = getString(R.string.nothing_found)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_light))
             searchRefreshButton.visibility = View.GONE
         } else {
-            searchResults.clear()
             searchRecycler.adapter = SearchRecyclerAdapter(results)
             placeholder.visibility = View.VISIBLE
             placeholderText.text = getString(R.string.connect_problem)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.practicum_problem_light))
             searchRefreshButton.visibility = View.VISIBLE
-            searchRefreshButton.setOnClickListener{search()}
+            searchRefreshButton.setOnClickListener{
+                search()}
         }
     }
 
@@ -188,7 +197,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    fun clearButtonVisibility(s: CharSequence?): Int {
+    private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
         } else {
