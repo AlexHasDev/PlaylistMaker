@@ -11,4 +11,7 @@
     <string name="share_title">"Share with: "</string>
     <string name="message_support">Thanks to the developers and developers for a cool app!</string>
     <string name="dot">•</string>
+    <string name="nothing_found">" Nothing found"</string>
+    <string name="connect_problem">Communication problems\n\n Download failed. Check your internet connection</string>
+    <string name="refresh_button">Refresh</string>
 </resources>

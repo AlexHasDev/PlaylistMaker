@@ -1,13 +1,15 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.UI
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.appSettings.App
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -21,8 +23,13 @@ class SettingsActivity : AppCompatActivity() {
         val sendToSupport = findViewById<TextView>(R.id.sent_to_support)
         val termsOfUse = findViewById<TextView>(R.id.terms_of_use)
         val arrowBack = findViewById<ImageView>(R.id.settings_arrow_back)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.theme_switcher)
 
         val url = "https://practicum.yandex.ru/profile/android-developer/"
+
+        themeSwitcher.setOnCheckedChangeListener{ switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
 
 
         share.setOnClickListener {
