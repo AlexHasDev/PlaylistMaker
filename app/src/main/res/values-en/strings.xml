@@ -14,4 +14,6 @@
     <string name="nothing_found">" Nothing found"</string>
     <string name="connect_problem">Communication problems\n\n Download failed. Check your internet connection</string>
     <string name="refresh_button">Refresh</string>
+    <string name="clear_history_button">Clear history</string>
+    <string name="search_history_text">You searched</string>
 </resources>

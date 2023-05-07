@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.UI
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -15,13 +16,19 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.practicum.playlistmaker.Data.StoryRecyclerAdapter.StoryRecyclerAdapter
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.RecyclerSearch.SearchRecyclerAdapter
-import com.practicum.playlistmaker.retrofitSearch.ITunesApi
-import com.practicum.playlistmaker.retrofitSearch.Track
-import com.practicum.playlistmaker.retrofitSearch.TracksResponse
-import okhttp3.Interceptor
+import com.practicum.playlistmaker.Data.RecyclerSearch.SearchRecyclerAdapter
+import com.practicum.playlistmaker.Data.retrofitSearch.ITunesApi
+import com.practicum.playlistmaker.Data.Track
+import com.practicum.playlistmaker.Data.retrofitSearch.SearchResponse
+import com.practicum.playlistmaker.appSettings.App
+import com.practicum.playlistmaker.appSettings.SEARCH_STORY_KEY
+import com.practicum.playlistmaker.appSettings.SEARCH_STORY_PREFERENCE
+import com.practicum.playlistmaker.appSettings.storyPreference
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,56 +41,79 @@ class SearchActivity : AppCompatActivity() {
 
     private var countValue: String = ""
     lateinit var searchText: String
-
+    lateinit var arrowBack: ImageView
     lateinit var interceptor: HttpLoggingInterceptor
+
+    //search
     lateinit var searchRecycler: RecyclerView
-    lateinit var results: ArrayList<Track>
+    lateinit var searchResults: ArrayList<Track>
+    lateinit var clearButton: ImageView
+    lateinit var inputEditSearchText: EditText
+    private lateinit var iTunesService: ITunesApi
+
+    //searching placeholder
     lateinit var placeholderText: TextView
     lateinit var placeholder: LinearLayout
     lateinit var placeholderImage: ImageView
     lateinit var searchRefreshButton: Button
-    lateinit var inputEditSearchText: EditText
-    private lateinit var iTunesService: ITunesApi
-    lateinit var clearButton: ImageView
-    lateinit var arrowBack: ImageView
 
+    //search story
+    lateinit var clearStoryButton: Button
+    lateinit var searchStoryView: LinearLayout
+    lateinit var storyList: Array<Track>
+    lateinit var storyRecycler: RecyclerView
+    lateinit var searchStoryPriference: SharedPreferences
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        //preference
+        searchStoryPriference = getSharedPreferences(SEARCH_STORY_PREFERENCE, MODE_PRIVATE)
 
+        //OkHttp
         interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
+        //system
         clearButton = findViewById(R.id.clearIcon)
         arrowBack = findViewById(R.id.search_arrow_back)
 
+
         inputEditSearchText = findViewById(R.id.search_edit_text)
+        searchResults = arrayListOf()
+
+
+        //placeholder
         placeholder = findViewById(R.id.placeholder_trackList)
         placeholderImage = findViewById(R.id.placeholder_trackList_image)
         placeholderText = findViewById(R.id.search_placeholder_text)
         searchRefreshButton = findViewById(R.id.search_refresh_button)
 
+
         //retrofit
         val searchRetrofit = Retrofit.Builder()
             .baseUrl("https://itunes.apple.com").client(client)
             .addConverterFactory(GsonConverterFactory.create())
-
             .build()
-
-        //itunes запросы
         iTunesService = searchRetrofit.create(ITunesApi::class.java)
 
 
-        results = arrayListOf()
-
+        //recyclers
         searchRecycler = findViewById(R.id.search_recycler)
+        storyRecycler = findViewById(R.id.search_story_recycler)
+        storyRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
 
 
-
+        //searchStory
+        val sharedStoryTrackList = storyPreference.getString(SEARCH_STORY_KEY, null)
+        searchStoryView = findViewById(R.id.search_story_view)
+        storyList = Gson().fromJson(sharedStoryTrackList, Array<Track>::class.java)
+        clearStoryButton = findViewById(R.id.clear_story_button)
+        showStoryList()
+        clearSearchStory()
 
         if (savedInstanceState != null)
             countValue = savedInstanceState.getString(SEARCH_STATE, countValue)
@@ -91,10 +121,14 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             inputEditSearchText.setText("")
-            results.clear()
-            searchRecycler.adapter = SearchRecyclerAdapter(results)
+            searchResults.clear()
+            searchRecycler.adapter = SearchRecyclerAdapter(searchResults)
             placeholder.visibility = View.GONE
         }
+
+
+
+
 
         countValue = inputEditSearchText.toString()
 
@@ -102,19 +136,22 @@ class SearchActivity : AppCompatActivity() {
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchStoryView.visibility = View.GONE
                 clearButton.visibility = clearButtonVisibility(s)
                 inputEditSearchText.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                         search()
-
                         true
                     }
                     false
                 }
+
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -123,70 +160,92 @@ class SearchActivity : AppCompatActivity() {
         }
         inputEditSearchText.addTextChangedListener(simpleTextWatcher)
 
-
-
         arrowBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
-
     }
+
 
     private fun search() {
 
-        if(inputEditSearchText.text.isNotEmpty())
+        if (inputEditSearchText.text.isNotEmpty())
             searchText = inputEditSearchText.text.toString()
 
         iTunesService.getSong(searchText.trim())
-            .enqueue(object : Callback<TracksResponse> {
+            .enqueue(object : Callback<SearchResponse> {
                 override fun onResponse(
-                    call: Call<TracksResponse>,
-                    response: Response<TracksResponse>
+                    call: Call<SearchResponse>,
+                    response: Response<SearchResponse>
                 ) {
                     if (searchText.isNotEmpty()) {
                         when (response.code()) {
                             200 -> if (response.body()?.results!!.isNotEmpty()) {
-                                results.clear()
-                                results.addAll(response.body()?.results!!)
-                                searchRecycler.adapter = SearchRecyclerAdapter(results)
+                                searchResults.clear()
+                                searchResults.addAll(response.body()?.results!!)
+                                searchRecycler.adapter = SearchRecyclerAdapter(searchResults)
                                 placeholder.visibility = View.GONE
                             } else {
-                                setPlaceholder(searchResults = results, onConnect = true)
+                                setPlaceholder(searchResults = searchResults, onConnect = true)
                             }
 
                             else -> {
-                                setPlaceholder(searchResults = results, onConnect = false)
+                                setPlaceholder(searchResults = searchResults, onConnect = false)
                             }
                         }
                     }
 
                 }
 
-                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                    setPlaceholder(searchResults = results, onConnect = false)
+                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                    setPlaceholder(searchResults = searchResults, onConnect = false)
                     Log.d(TAG, t.toString())
                 }
 
             })
     }
 
+    private fun clearSearchStory() {
+        val clearedStoryList: Array<Track> = arrayOf()
+        clearStoryButton.setOnClickListener {
+            val clearedStory: ArrayList<Track> = arrayListOf()
+            searchStoryPriference.edit().putString(
+                SEARCH_STORY_KEY, App().createJsonFromTrackList(clearedStory))
+                .apply()
+                storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList)
+                searchStoryView.visibility = View.GONE
+        }
+    }
+
+    private fun showStoryList() {
+        if (storyList.isNotEmpty()) {
+            inputEditSearchText.setOnFocusChangeListener { view, hasFocus ->
+                searchStoryView.visibility = View.VISIBLE
+                storyRecycler.adapter = StoryRecyclerAdapter(storyList)
+
+            }
+
+        }
+    }
+
     private fun setPlaceholder(searchResults: ArrayList<Track>, onConnect: Boolean) {
         searchResults.clear()
         if (onConnect) {
-            searchRecycler.adapter = SearchRecyclerAdapter(results)
+            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults)
             placeholder.visibility = View.VISIBLE
             placeholderText.text = getString(R.string.nothing_found)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_light))
             searchRefreshButton.visibility = View.GONE
         } else {
-            searchRecycler.adapter = SearchRecyclerAdapter(results)
+            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults)
             placeholder.visibility = View.VISIBLE
             placeholderText.text = getString(R.string.connect_problem)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.practicum_problem_light))
             searchRefreshButton.visibility = View.VISIBLE
-            searchRefreshButton.setOnClickListener{
-                search()}
+            searchRefreshButton.setOnClickListener {
+                search()
+            }
         }
     }
 
