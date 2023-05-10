@@ -58,9 +58,9 @@ class SearchRecyclerAdapter(
         holder.trackArtist.text = adapterTrackList[position].artistName
 
         val actualTime = adapterTrackList[position].trackTimeMillis
-
-        holder.trackTime.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(actualTime.toInt())
+        if(actualTime != null){
+            holder.trackTime.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(actualTime.toInt())}
 
         holder.bindImage(adapterTrackList[position])
         holder.itemView.setOnClickListener {

@@ -40,29 +40,29 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
 
     private var countValue: String = ""
-    lateinit var searchText: String
-    lateinit var arrowBack: ImageView
-    lateinit var interceptor: HttpLoggingInterceptor
+    private lateinit var searchText: String
+    private lateinit var arrowBack: ImageView
+    private lateinit var interceptor: HttpLoggingInterceptor
 
     //search
-    lateinit var searchRecycler: RecyclerView
-    lateinit var searchResults: ArrayList<Track>
-    lateinit var clearButton: ImageView
-    lateinit var inputEditSearchText: EditText
+    private lateinit var searchRecycler: RecyclerView
+    private lateinit var searchResults: ArrayList<Track>
+    private lateinit var clearButton: ImageView
+    private lateinit var inputEditSearchText: EditText
     private lateinit var iTunesService: ITunesApi
 
     //searching placeholder
-    lateinit var placeholderText: TextView
-    lateinit var placeholder: LinearLayout
-    lateinit var placeholderImage: ImageView
-    lateinit var searchRefreshButton: Button
+    private lateinit var placeholderText: TextView
+    private lateinit var placeholder: LinearLayout
+    private lateinit var placeholderImage: ImageView
+    private lateinit var searchRefreshButton: Button
 
     //search story
-    lateinit var clearStoryButton: Button
-    lateinit var searchStoryView: LinearLayout
-    lateinit var storyList: Array<Track>
-    lateinit var storyRecycler: RecyclerView
-    lateinit var searchStoryPriference: SharedPreferences
+    private lateinit var clearStoryButton: Button
+    private lateinit var searchStoryView: LinearLayout
+    private lateinit var storyList: Array<Track>
+    private lateinit var storyRecycler: RecyclerView
+    private lateinit var searchStoryPreference: SharedPreferences
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         //preference
-        searchStoryPriference = getSharedPreferences(SEARCH_STORY_PREFERENCE, MODE_PRIVATE)
+        searchStoryPreference = getSharedPreferences(SEARCH_STORY_PREFERENCE, MODE_PRIVATE)
 
         //OkHttp
         interceptor = HttpLoggingInterceptor()
@@ -110,10 +110,14 @@ class SearchActivity : AppCompatActivity() {
         //searchStory
         val sharedStoryTrackList = storyPreference.getString(SEARCH_STORY_KEY, null)
         searchStoryView = findViewById(R.id.search_story_view)
-        storyList = Gson().fromJson(sharedStoryTrackList, Array<Track>::class.java)
+        storyList =
+            if (sharedStoryTrackList == null) arrayOf()
+            else Gson().fromJson(sharedStoryTrackList, Array<Track>::class.java)
         clearStoryButton = findViewById(R.id.clear_story_button)
         showStoryList()
         clearSearchStory()
+
+
 
         if (savedInstanceState != null)
             countValue = savedInstanceState.getString(SEARCH_STATE, countValue)
@@ -210,11 +214,12 @@ class SearchActivity : AppCompatActivity() {
         val clearedStoryList: Array<Track> = arrayOf()
         clearStoryButton.setOnClickListener {
             val clearedStory: ArrayList<Track> = arrayListOf()
-            searchStoryPriference.edit().putString(
-                SEARCH_STORY_KEY, App().createJsonFromTrackList(clearedStory))
+            searchStoryPreference.edit().putString(
+                SEARCH_STORY_KEY, App().createJsonFromTrackList(clearedStory)
+            )
                 .apply()
-                storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList)
-                searchStoryView.visibility = View.GONE
+            storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList)
+            searchStoryView.visibility = View.GONE
         }
     }
 

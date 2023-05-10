@@ -1,10 +1,8 @@
 package com.practicum.playlistmaker.appSettings
 
 import android.app.Application
-import android.content.ContentValues.TAG
 import android.content.SharedPreferences
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.gson.Gson
@@ -28,7 +26,6 @@ class App : Application() {
         sharedPreference = getSharedPreferences(SETTINGS_PREFERENCE, MODE_PRIVATE)
         darkTheme = sharedPreference.getBoolean(SETTINGS_KEY_FOR_EDIT, false)
         switchTheme(darkTheme)
-
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
@@ -45,13 +42,14 @@ class App : Application() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun saveSearchStoryPreference(track: Track) {
-        val storyListPreference: Array<Track> = createTrackListFromJson()
+        val storyListPreference: Array<Track>? =
+            if (createTrackListFromJson() == null) arrayOf() else createTrackListFromJson()
         val storyList: ArrayList<Track> = arrayListOf()
-
-        for (i in storyListPreference) {
-            storyList.add(i)
+        if (storyListPreference != null) {
+            for (i in storyListPreference) {
+                storyList.add(i)
+            }
         }
-
         storyList.removeIf { element -> element == track }
         storyList.add(track)
 
@@ -65,16 +63,18 @@ class App : Application() {
             )
         )
             .apply()
-        Log.w(TAG, "${storyListPreference.size} LOGAN")
+
     }
 
-    private fun createTrackListFromJson(): Array<Track> {
+    private fun createTrackListFromJson(): Array<Track>? {
         val sharedTrackList = storyPreference.getString(SEARCH_STORY_KEY, null)
         return Gson().fromJson(sharedTrackList, Array<Track>::class.java)
+
     }
 
     fun createJsonFromTrackList(trackList: ArrayList<Track>): String {
         return Gson().toJson(trackList)
     }
+
 
 }
