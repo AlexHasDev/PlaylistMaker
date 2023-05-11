@@ -10,11 +10,14 @@ import android.widget.TextView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.appSettings.App
+import com.practicum.playlistmaker.appSettings.SETTINGS_KEY_FOR_EDIT
+import com.practicum.playlistmaker.appSettings.SETTINGS_PREFERENCE
 
 class SettingsActivity : AppCompatActivity() {
 
 
     @SuppressLint("MissingInflatedId")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -27,6 +30,8 @@ class SettingsActivity : AppCompatActivity() {
 
         val url = "https://practicum.yandex.ru/profile/android-developer/"
 
+        val sharedPreference = getSharedPreferences(SETTINGS_PREFERENCE, MODE_PRIVATE)
+        themeSwitcher.isChecked = sharedPreference.getBoolean(SETTINGS_KEY_FOR_EDIT, App().darkTheme)
         themeSwitcher.setOnCheckedChangeListener{ switcher, checked ->
             (applicationContext as App).switchTheme(checked)
         }
@@ -44,11 +49,11 @@ class SettingsActivity : AppCompatActivity() {
 
         sendToSupport.setOnClickListener {
             val message = getString(R.string.message_support)
-            val sandIntent = Intent(Intent.ACTION_SENDTO)
-            sandIntent.data = Uri.parse("mailto:")
-            sandIntent.putExtra(Intent.EXTRA_EMAIL, "alekseykhulla@yandex.ru")
-            sandIntent.putExtra(Intent.EXTRA_TEXT, message)
-            startActivity(sandIntent)
+            val sendIntent = Intent(Intent.ACTION_SENDTO)
+            sendIntent.data = Uri.parse("mailto:")
+            sendIntent.putExtra(Intent.EXTRA_EMAIL, "alekseykhulla@yandex.ru")
+            sendIntent.putExtra(Intent.EXTRA_TEXT, message)
+            startActivity(sendIntent)
         }
 
         termsOfUse.setOnClickListener {
@@ -58,8 +63,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         arrowBack.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
     }
