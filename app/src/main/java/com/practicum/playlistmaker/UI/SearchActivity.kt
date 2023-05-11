@@ -26,6 +26,7 @@ import com.practicum.playlistmaker.Data.retrofitSearch.ITunesApi
 import com.practicum.playlistmaker.Data.Track
 import com.practicum.playlistmaker.Data.retrofitSearch.SearchResponse
 import com.practicum.playlistmaker.appSettings.App
+import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_KEY
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_PREFERENCE
 import com.practicum.playlistmaker.appSettings.storyPreference
@@ -165,8 +166,7 @@ class SearchActivity : AppCompatActivity() {
         inputEditSearchText.addTextChangedListener(simpleTextWatcher)
 
         arrowBack.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+           finish()
         }
 
     }
@@ -215,7 +215,7 @@ class SearchActivity : AppCompatActivity() {
         clearStoryButton.setOnClickListener {
             val clearedStory: ArrayList<Track> = arrayListOf()
             searchStoryPreference.edit().putString(
-                SEARCH_STORY_KEY, App().createJsonFromTrackList(clearedStory)
+                SEARCH_STORY_KEY, CreateSharedPreferences().createJsonFromTrackList(clearedStory)
             )
                 .apply()
             storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList)

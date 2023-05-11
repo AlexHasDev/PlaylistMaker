@@ -14,6 +14,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.Data.Track
 import com.practicum.playlistmaker.Data.makeTrack
 import com.practicum.playlistmaker.appSettings.App
+import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
 
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -64,7 +65,7 @@ class SearchRecyclerAdapter(
 
         holder.bindImage(adapterTrackList[position])
         holder.itemView.setOnClickListener {
-           App().saveSearchStoryPreference(
+           CreateSharedPreferences().saveSearchStoryPreference(
                makeTrack(
                 adapterTrackList[position].trackId,
                 adapterTrackList[position].trackName,
