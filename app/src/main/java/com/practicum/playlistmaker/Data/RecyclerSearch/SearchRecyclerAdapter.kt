@@ -1,18 +1,24 @@
 package com.practicum.playlistmaker.Data.RecyclerSearch
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.Data.Track
 import com.practicum.playlistmaker.Data.makeTrack
+import com.practicum.playlistmaker.UI.PlayerTrackActivity
+import com.practicum.playlistmaker.UI.SearchActivity
 import com.practicum.playlistmaker.appSettings.App
 import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
 
@@ -21,7 +27,8 @@ import java.util.Locale
 
 
 class SearchRecyclerAdapter(
-    private val adapterTrackList: ArrayList<Track>
+    private val adapterTrackList: ArrayList<Track>,
+    val trackListener: TrackListener
 ) : RecyclerView.Adapter<SearchRecyclerAdapter.SearchViewHolder>() {
     class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -36,8 +43,6 @@ class SearchRecyclerAdapter(
                 .placeholder(R.drawable.snake)
                 .transform(RoundedCorners(2))
                 .into(trackImage)
-
-
         }
     }
 
@@ -59,23 +64,32 @@ class SearchRecyclerAdapter(
         holder.trackArtist.text = adapterTrackList[position].artistName
 
         val actualTime = adapterTrackList[position].trackTimeMillis
-        if(actualTime != null){
+        if (actualTime != null) {
             holder.trackTime.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(actualTime.toInt())}
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(actualTime.toInt())
+        }
 
         holder.bindImage(adapterTrackList[position])
         holder.itemView.setOnClickListener {
-           CreateSharedPreferences().saveSearchStoryPreference(
-               makeTrack(
-                adapterTrackList[position].trackId,
-                adapterTrackList[position].trackName,
-                adapterTrackList[position].artistName,
-                adapterTrackList[position].trackTimeMillis,
-                adapterTrackList[position].artworkUrl100
+            CreateSharedPreferences().saveSearchStoryPreference(
+                makeTrack(
+                    adapterTrackList[position].trackId,
+                    adapterTrackList[position].trackName,
+                    adapterTrackList[position].artistName,
+                    adapterTrackList[position].trackTimeMillis,
+                    adapterTrackList[position].artworkUrl100,
+                    adapterTrackList[position].country,
+                    adapterTrackList[position].primaryGenreName,
+                    adapterTrackList[position].collectionName,
+                    adapterTrackList[position].releaseDate
+                )
             )
-           )
+            trackListener.onClick(adapterTrackList[position])
         }
     }
 
+    interface TrackListener {
+        fun onClick(track: Track)
+    }
 
 }

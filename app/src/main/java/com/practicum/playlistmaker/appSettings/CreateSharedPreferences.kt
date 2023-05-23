@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.appSettings
 
+import android.content.ContentValues.TAG
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.practicum.playlistmaker.Data.Track
@@ -20,14 +22,12 @@ class CreateSharedPreferences {
         if (storyList.size > 10) {
             storyList.removeAt(0)
         }
-
         storyPreference.edit().putString(
             SEARCH_STORY_KEY, createJsonFromTrackList(
                 storyList
             )
         )
             .apply()
-
     }
 
     private fun createTrackListFromJson(): Array<Track>? {
@@ -39,4 +39,6 @@ class CreateSharedPreferences {
     fun createJsonFromTrackList(trackList: ArrayList<Track>): String {
         return Gson().toJson(trackList)
     }
+
+
 }

@@ -29,6 +29,7 @@ import com.practicum.playlistmaker.appSettings.App
 import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_KEY
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_PREFERENCE
+import com.practicum.playlistmaker.appSettings.TRACK_TO_PLAYER_KEY
 import com.practicum.playlistmaker.appSettings.storyPreference
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -38,7 +39,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener {
 
     private var countValue: String = ""
     private lateinit var searchText: String
@@ -127,7 +128,7 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             inputEditSearchText.setText("")
             searchResults.clear()
-            searchRecycler.adapter = SearchRecyclerAdapter(searchResults)
+            searchRecycler.adapter = SearchRecyclerAdapter(searchResults, this)
             placeholder.visibility = View.GONE
         }
 
@@ -188,7 +189,7 @@ class SearchActivity : AppCompatActivity() {
                             200 -> if (response.body()?.results!!.isNotEmpty()) {
                                 searchResults.clear()
                                 searchResults.addAll(response.body()?.results!!)
-                                searchRecycler.adapter = SearchRecyclerAdapter(searchResults)
+                                searchRecycler.adapter = SearchRecyclerAdapter(searchResults, this@SearchActivity)
                                 placeholder.visibility = View.GONE
                             } else {
                                 setPlaceholder(searchResults = searchResults, onConnect = true)
@@ -218,7 +219,7 @@ class SearchActivity : AppCompatActivity() {
                 SEARCH_STORY_KEY, CreateSharedPreferences().createJsonFromTrackList(clearedStory)
             )
                 .apply()
-            storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList)
+            storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList,this)
             searchStoryView.visibility = View.GONE
         }
     }
@@ -227,7 +228,7 @@ class SearchActivity : AppCompatActivity() {
         if (storyList.isNotEmpty()) {
             inputEditSearchText.setOnFocusChangeListener { view, hasFocus ->
                 searchStoryView.visibility = View.VISIBLE
-                storyRecycler.adapter = StoryRecyclerAdapter(storyList)
+                storyRecycler.adapter = StoryRecyclerAdapter(storyList,this)
 
             }
 
@@ -237,13 +238,13 @@ class SearchActivity : AppCompatActivity() {
     private fun setPlaceholder(searchResults: ArrayList<Track>, onConnect: Boolean) {
         searchResults.clear()
         if (onConnect) {
-            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults)
+            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
             placeholder.visibility = View.VISIBLE
             placeholderText.text = getString(R.string.nothing_found)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_light))
             searchRefreshButton.visibility = View.GONE
         } else {
-            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults)
+            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
             placeholder.visibility = View.VISIBLE
             placeholderText.text = getString(R.string.connect_problem)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.practicum_problem_light))
@@ -274,4 +275,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
+    override fun onClick(track: Track) {
+    val trackIntent = Intent(this, PlayerTrackActivity::class.java)
+        trackIntent.putExtra(TRACK_TO_PLAYER_KEY, track)
+        startActivity(trackIntent)
+    }
 }

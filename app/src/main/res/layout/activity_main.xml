@@ -28,7 +28,7 @@
     <Button
         android:id="@+id/search"
         style="@style/main_menu_button_style"
-        app:cornerRadius="@dimen/cornerButton"
+        app:cornerRadius="@dimen/corner_radius_main_menu"
         android:text="@string/search"
         app:icon="@drawable/ic_search"
         app:iconGravity="textStart"
@@ -38,7 +38,7 @@
     <Button
         android:id="@+id/media"
         style="@style/main_menu_button_style"
-        app:cornerRadius="@dimen/cornerButton"
+        app:cornerRadius="@dimen/corner_radius_main_menu"
         android:text="@string/media"
         app:icon="@drawable/ic_music"
         app:iconGravity="textStart"
@@ -48,7 +48,7 @@
     <Button
         android:id="@+id/settings"
         style="@style/main_menu_button_style"
-        app:cornerRadius="@dimen/cornerButton"
+        app:cornerRadius="@dimen/corner_radius_main_menu"
         android:text="@string/settings"
         app:icon="@drawable/ic_settings"
         app:iconGravity="textStart"
