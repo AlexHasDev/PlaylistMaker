@@ -11,6 +11,7 @@ import java.util.Locale
 
 class StoryRecyclerAdapter(
     private val storyTrackList: Array<Track>,
+    val trackListener: SearchRecyclerAdapter.TrackListener
 ): RecyclerView.Adapter<SearchRecyclerAdapter.SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchRecyclerAdapter.SearchViewHolder {
@@ -34,5 +35,8 @@ class StoryRecyclerAdapter(
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(actualTime.toInt())}
 
         holder.bindImage(storyTrackList[position])
+        holder.itemView.setOnClickListener {
+            trackListener.onClick(storyTrackList[position])
+        }
     }
 }

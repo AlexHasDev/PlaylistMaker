@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/settings_menu_background"
+    style="@style/default_menu_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,7 +19,7 @@
 
         <ImageView
             android:id="@+id/settings_arrow_back"
-            style="@style/settings_arrow_style"
+            style="@style/arrow_back_style"
             android:src="@drawable/ic_arrow_back" />
 
 

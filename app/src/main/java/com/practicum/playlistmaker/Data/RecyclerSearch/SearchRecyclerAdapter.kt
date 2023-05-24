@@ -12,16 +12,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.Data.Track
-import com.practicum.playlistmaker.Data.makeTrack
-import com.practicum.playlistmaker.appSettings.App
-import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
+import com.practicum.playlistmaker.Utils.DateUtils
 
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 class SearchRecyclerAdapter(
-    private val adapterTrackList: ArrayList<Track>
+    private val adapterTrackList: ArrayList<Track>,
+    private val trackListener: TrackListener
 ) : RecyclerView.Adapter<SearchRecyclerAdapter.SearchViewHolder>() {
     class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -31,13 +28,12 @@ class SearchRecyclerAdapter(
         var trackImage: ImageView = itemView.findViewById(R.id.song_image)
 
         fun bindImage(track: Track) {
+
             Glide.with(itemView)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.snake)
                 .transform(RoundedCorners(2))
                 .into(trackImage)
-
-
         }
     }
 
@@ -59,23 +55,20 @@ class SearchRecyclerAdapter(
         holder.trackArtist.text = adapterTrackList[position].artistName
 
         val actualTime = adapterTrackList[position].trackTimeMillis
-        if(actualTime != null){
-            holder.trackTime.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(actualTime.toInt())}
+        if (actualTime != null) {
+            holder.trackTime.text = DateUtils.changeDateFormat(actualTime)
+
+        }
 
         holder.bindImage(adapterTrackList[position])
         holder.itemView.setOnClickListener {
-           CreateSharedPreferences().saveSearchStoryPreference(
-               makeTrack(
-                adapterTrackList[position].trackId,
-                adapterTrackList[position].trackName,
-                adapterTrackList[position].artistName,
-                adapterTrackList[position].trackTimeMillis,
-                adapterTrackList[position].artworkUrl100
-            )
-           )
+
+            trackListener.onClick(adapterTrackList[position])
         }
     }
 
+    interface TrackListener {
+        fun onClick(track: Track)
+    }
 
 }
