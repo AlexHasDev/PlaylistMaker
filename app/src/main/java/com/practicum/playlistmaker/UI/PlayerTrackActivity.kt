@@ -1,23 +1,19 @@
 package com.practicum.playlistmaker.UI
 
-import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.Data.Track
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
+import com.practicum.playlistmaker.Utils.DateUtils
 import com.practicum.playlistmaker.appSettings.TRACK_TO_PLAYER_KEY
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 class PlayerTrackActivity : AppCompatActivity() {
-
+    //buttons
     lateinit var arrowBack: ImageView
 
     //track
@@ -58,14 +54,14 @@ class PlayerTrackActivity : AppCompatActivity() {
 
 
     }
-    fun inflateTrack(track: Track?){
+   private fun inflateTrack(track: Track?){
         trackName.text = track?.trackName
         artistName.text = track?.artistName
         album.text = track?.collectionName
         year.text = track?.releaseDate?.substring(0, 4)
         genre.text = track?.primaryGenreName
         country.text = track?.country
-        duration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track?.trackTimeMillis?.toInt())
+        duration.text = DateUtils.changeDateFormat(track?.trackTimeMillis)
         trackTime.text = "0:00"
         Glide.with(this)
             .load(track?.artworkUrl100?.replaceAfterLast('/',"512x512bb.jpg")

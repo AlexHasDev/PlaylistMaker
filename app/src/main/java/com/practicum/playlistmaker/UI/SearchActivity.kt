@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -25,7 +27,6 @@ import com.practicum.playlistmaker.Data.RecyclerSearch.SearchRecyclerAdapter
 import com.practicum.playlistmaker.Data.retrofitSearch.ITunesApi
 import com.practicum.playlistmaker.Data.Track
 import com.practicum.playlistmaker.Data.retrofitSearch.SearchResponse
-import com.practicum.playlistmaker.appSettings.App
 import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_KEY
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_PREFERENCE
@@ -133,9 +134,6 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         }
 
 
-
-
-
         countValue = inputEditSearchText.toString()
 
 
@@ -167,7 +165,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         inputEditSearchText.addTextChangedListener(simpleTextWatcher)
 
         arrowBack.setOnClickListener {
-           finish()
+            finish()
         }
 
     }
@@ -189,7 +187,8 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
                             200 -> if (response.body()?.results!!.isNotEmpty()) {
                                 searchResults.clear()
                                 searchResults.addAll(response.body()?.results!!)
-                                searchRecycler.adapter = SearchRecyclerAdapter(searchResults, this@SearchActivity)
+                                searchRecycler.adapter =
+                                    SearchRecyclerAdapter(searchResults, this@SearchActivity)
                                 placeholder.visibility = View.GONE
                             } else {
                                 setPlaceholder(searchResults = searchResults, onConnect = true)
@@ -216,10 +215,10 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         clearStoryButton.setOnClickListener {
             val clearedStory: ArrayList<Track> = arrayListOf()
             searchStoryPreference.edit().putString(
-                SEARCH_STORY_KEY, CreateSharedPreferences().createJsonFromTrackList(clearedStory)
+                SEARCH_STORY_KEY, CreateSharedPreferences.createJsonFromTrackList(clearedStory)
             )
                 .apply()
-            storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList,this)
+            storyRecycler.adapter = StoryRecyclerAdapter(clearedStoryList, this)
             searchStoryView.visibility = View.GONE
         }
     }
@@ -228,7 +227,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         if (storyList.isNotEmpty()) {
             inputEditSearchText.setOnFocusChangeListener { view, hasFocus ->
                 searchStoryView.visibility = View.VISIBLE
-                storyRecycler.adapter = StoryRecyclerAdapter(storyList,this)
+                storyRecycler.adapter = StoryRecyclerAdapter(storyList, this)
 
             }
 
@@ -275,8 +274,22 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(track: Track) {
-    val trackIntent = Intent(this, PlayerTrackActivity::class.java)
+        CreateSharedPreferences.saveSearchStoryPreference(
+            Track(
+                track.trackId,
+                track.trackName,
+                track.artistName,
+                track.trackTimeMillis,
+                track.artworkUrl100,
+                track.country,
+                track.primaryGenreName,
+                track.collectionName,
+                track.releaseDate
+            )
+        )
+        val trackIntent = Intent(this, PlayerTrackActivity::class.java)
         trackIntent.putExtra(TRACK_TO_PLAYER_KEY, track)
         startActivity(trackIntent)
     }

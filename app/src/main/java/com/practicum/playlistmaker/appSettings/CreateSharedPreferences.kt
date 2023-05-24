@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.practicum.playlistmaker.Data.Track
 
-class CreateSharedPreferences {
+object CreateSharedPreferences {
     @RequiresApi(Build.VERSION_CODES.N)
     fun saveSearchStoryPreference(track: Track) {
         val storyListPreference: Array<Track>? =

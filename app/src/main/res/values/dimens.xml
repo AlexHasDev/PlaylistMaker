@@ -11,4 +11,5 @@
     <dimen name="margin_for_player_borders">16dp</dimen>
     <dimen name="margin_for_player_description_titles">16dp</dimen>
     <dimen name="size_for_player_artistName_and_time">14sp</dimen>
+    <dimen name="album_image_corner_radius">2dp</dimen>
 </resources>

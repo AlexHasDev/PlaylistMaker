@@ -53,16 +53,3 @@ data class Track(
         }
     }
 }
-fun makeTrack(
-    id: String?,
-    name: String?,
-    artist: String?,
-    time: String?,
-    image: String?,
-    country: String?,
-    genre: String?,
-    album: String?,
-    year: String?
-): Track {
-    return Track(id, name, artist, time, image, country, genre, album, year)
-}
