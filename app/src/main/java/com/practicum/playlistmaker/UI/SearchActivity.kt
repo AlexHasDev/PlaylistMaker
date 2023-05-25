@@ -27,6 +27,7 @@ import com.practicum.playlistmaker.Data.RecyclerSearch.SearchRecyclerAdapter
 import com.practicum.playlistmaker.Data.retrofitSearch.ITunesApi
 import com.practicum.playlistmaker.Data.Track
 import com.practicum.playlistmaker.Data.retrofitSearch.SearchResponse
+import com.practicum.playlistmaker.Data.trackToJson
 import com.practicum.playlistmaker.appSettings.CreateSharedPreferences
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_KEY
 import com.practicum.playlistmaker.appSettings.SEARCH_STORY_PREFERENCE
@@ -290,7 +291,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
             )
         )
         val trackIntent = Intent(this, PlayerTrackActivity::class.java)
-        trackIntent.putExtra(TRACK_TO_PLAYER_KEY, track)
+        trackIntent.putExtra(TRACK_TO_PLAYER_KEY, trackToJson(track))
         startActivity(trackIntent)
     }
 }
