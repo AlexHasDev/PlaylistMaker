@@ -7,6 +7,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.Data.Track
+import com.practicum.playlistmaker.Data.trackFromJson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.Utils.DateUtils
 import com.practicum.playlistmaker.appSettings.TRACK_TO_PLAYER_KEY
@@ -43,14 +44,18 @@ class PlayerTrackActivity : AppCompatActivity() {
         country = findViewById(R.id.player_track_country)
         trackTime = findViewById(R.id.player_track_time)
 
-        //track
-        val receivedIntent = intent
-        val playerTrack = receivedIntent.getParcelableExtra<Track>(TRACK_TO_PLAYER_KEY)
-        inflateTrack(playerTrack)
 
         //buttons
         arrowBack = findViewById(R.id.player_arrow_back)
         arrowBack.setOnClickListener { finish() }
+
+
+
+        //track
+        val receivedIntent = intent.getStringExtra(TRACK_TO_PLAYER_KEY)
+        val trackForPlayer = trackFromJson(receivedIntent)
+        inflateTrack(trackForPlayer)
+
 
 
     }
