@@ -164,6 +164,7 @@ class PlayerTrackActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
+        mainHandler.removeCallbacks(timeThread)
     }
 
     private fun trackStopwatch(): Runnable {

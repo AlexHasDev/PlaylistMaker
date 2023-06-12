@@ -185,6 +185,12 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     }
 
 
+    override fun onDestroy() {
+        mainHandler.removeCallbacks(searchRunnable)
+        super.onDestroy()
+    }
+
+
     private fun search() {
 
         if (inputEditSearchText.text.isNotEmpty()) {
