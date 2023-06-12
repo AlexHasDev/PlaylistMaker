@@ -7,16 +7,19 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +44,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener {
+
+
+
 
     private var countValue: String = ""
     private lateinit var searchText: String
@@ -54,6 +61,11 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     private lateinit var clearButton: ImageView
     private lateinit var inputEditSearchText: EditText
     private lateinit var iTunesService: ITunesApi
+    private lateinit var searchRunnable: Runnable
+    private lateinit var searchingProgressBar: ProgressBar
+    private var isClickAllowed = true
+
+    private lateinit var mainHandler: Handler
 
     //searching placeholder
     private lateinit var placeholderText: TextView
@@ -73,6 +85,10 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        //handler
+        mainHandler = Handler(Looper.getMainLooper())
+
+
         //preference
         searchStoryPreference = getSharedPreferences(SEARCH_STORY_PREFERENCE, MODE_PRIVATE)
 
@@ -81,13 +97,16 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-        //system
+        //Ux elements
         clearButton = findViewById(R.id.clearIcon)
         arrowBack = findViewById(R.id.search_arrow_back)
 
-
+        //search
         inputEditSearchText = findViewById(R.id.search_edit_text)
         searchResults = arrayListOf()
+        searchingProgressBar = findViewById(R.id.searching_progress_bar)
+        searchRunnable = Runnable { search() }
+
 
 
         //placeholder
@@ -123,14 +142,14 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
 
 
+
         if (savedInstanceState != null)
             countValue = savedInstanceState.getString(SEARCH_STATE, countValue)
 
 
         clearButton.setOnClickListener {
             inputEditSearchText.setText("")
-            searchResults.clear()
-            searchRecycler.adapter = SearchRecyclerAdapter(searchResults, this)
+            clearSearchResults()
             placeholder.visibility = View.GONE
         }
 
@@ -144,17 +163,11 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
             }
 
+            @SuppressLint("SuspiciousIndentation")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchStoryView.visibility = View.GONE
                 clearButton.visibility = clearButtonVisibility(s)
-                inputEditSearchText.setOnEditorActionListener { _, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                        search()
-                        true
-                    }
-                    false
-                }
+                    searchDebounce()
 
 
             }
@@ -172,11 +185,20 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     }
 
 
+    override fun onDestroy() {
+        mainHandler.removeCallbacks(searchRunnable)
+        super.onDestroy()
+    }
+
+
     private fun search() {
 
-        if (inputEditSearchText.text.isNotEmpty())
+        if (inputEditSearchText.text.isNotEmpty()) {
             searchText = inputEditSearchText.text.toString()
-
+            clearSearchResults()
+            placeholder.visibility = View.GONE
+            searchingProgressBar.visibility = View.VISIBLE
+        }
         iTunesService.getSong(searchText.trim())
             .enqueue(object : Callback<SearchResponse> {
                 override fun onResponse(
@@ -184,6 +206,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
                     response: Response<SearchResponse>
                 ) {
                     if (searchText.isNotEmpty()) {
+                        searchingProgressBar.visibility = View.GONE
                         when (response.code()) {
                             200 -> if (response.body()?.results!!.isNotEmpty()) {
                                 searchResults.clear()
@@ -197,13 +220,16 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
                             else -> {
                                 setPlaceholder(searchResults = searchResults, onConnect = false)
+
                             }
                         }
                     }
 
+
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                    searchingProgressBar.visibility = View.GONE
                     setPlaceholder(searchResults = searchResults, onConnect = false)
                     Log.d(TAG, t.toString())
                 }
@@ -243,6 +269,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
             placeholderText.text = getString(R.string.nothing_found)
             placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_light))
             searchRefreshButton.visibility = View.GONE
+
         } else {
             searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
             placeholder.visibility = View.VISIBLE
@@ -270,28 +297,44 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         }
     }
 
-    companion object {
-        const val SEARCH_STATE = "SEARCH_STATE"
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(track: Track) {
-        CreateSharedPreferences.saveSearchStoryPreference(
-            Track(
-                track.trackId,
-                track.trackName,
-                track.artistName,
-                track.trackTimeMillis,
-                track.artworkUrl100,
-                track.country,
-                track.primaryGenreName,
-                track.collectionName,
-                track.releaseDate
-            )
-        )
-        val trackIntent = Intent(this, PlayerTrackActivity::class.java)
-        trackIntent.putExtra(TRACK_TO_PLAYER_KEY, trackToJson(track))
-        startActivity(trackIntent)
+        if(isClickAllowed) {
+            clickDebounce()
+            CreateSharedPreferences.saveSearchStoryPreference(track)
+            val trackIntent = Intent(this, PlayerTrackActivity::class.java)
+            trackIntent.putExtra(TRACK_TO_PLAYER_KEY, trackToJson(track))
+            startActivity(trackIntent)
+        }
+    }
+
+    private fun searchDebounce() {
+        mainHandler.removeCallbacks(searchRunnable)
+        if(inputEditSearchText.text.toString() != "") {
+            mainHandler.postDelayed(searchRunnable, SEARCH_DELAY)
+        }
+    }
+
+    private fun clickDebounce() : Boolean{
+        val current = isClickAllowed
+        if (isClickAllowed){
+            isClickAllowed = false
+            mainHandler.postDelayed({isClickAllowed = true}, CLICK_DELAY)
+        }
+        return current
+    }
+
+
+    private fun clearSearchResults(){
+        searchResults.clear()
+        searchRecycler.adapter = SearchRecyclerAdapter(searchResults, this)
+    }
+
+    companion object {
+        const val SEARCH_STATE = "SEARCH_STATE"
+        const val CLICK_DELAY = 1000L
+        const val SEARCH_DELAY = 2000L
     }
 }
