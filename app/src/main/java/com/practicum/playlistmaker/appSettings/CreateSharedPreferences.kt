@@ -16,29 +16,26 @@ object CreateSharedPreferences {
         if (storyListPreference != null) {
             storyList.addAll(storyListPreference)
         }
+
         storyList.removeIf { element -> element == track }
         storyList.add(track)
 
         if (storyList.size > 10) {
             storyList.removeAt(0)
         }
-        storyPreference.edit().putString(
-            SEARCH_STORY_KEY, createJsonFromTrackList(
-                storyList
-            )
-        )
+
+        storyPreference.edit()
+            .putString(SEARCH_STORY_KEY, createJsonFromTrackList(storyList))
             .apply()
     }
 
     private fun createTrackListFromJson(): Array<Track>? {
         val sharedTrackList = storyPreference.getString(SEARCH_STORY_KEY, null)
         return Gson().fromJson(sharedTrackList, Array<Track>::class.java)
-
     }
 
     fun createJsonFromTrackList(trackList: ArrayList<Track>): String {
         return Gson().toJson(trackList)
     }
-
 
 }

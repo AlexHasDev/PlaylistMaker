@@ -13,13 +13,13 @@ data class Track(
     val country: String?,
     val primaryGenreName: String?,
     val collectionName: String?,
-    val releaseDate: String?
+    val releaseDate: String?,
+    val previewUrl: String?
 )
+    fun trackToJson(track: Track): String? {
+        return Gson().toJson(track)
+    }
 
-fun trackToJson(track: Track): String?{
-    return Gson().toJson(track)
-}
-
-fun trackFromJson(jsonTrack: String?): Track{
-    return Gson().fromJson(jsonTrack, Track::class.java)
-}
+    fun trackFromJson(jsonTrack: String?): Track {
+        return Gson().fromJson(jsonTrack, Track::class.java)
+    }
