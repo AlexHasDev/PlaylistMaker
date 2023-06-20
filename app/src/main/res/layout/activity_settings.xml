@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
-    tools:context=".UI.SettingsActivity"
+    tools:context=".presentation.ui.SettingsActivity"
     tools:ignore="RtlSymmetry">
 
     <LinearLayout
