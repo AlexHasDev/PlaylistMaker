@@ -32,10 +32,10 @@ import com.practicum.playlistmaker.data.dto.TracksSearchResponse
 import com.practicum.playlistmaker.data.repository.sharedprefs.CreateSharedPreferences
 import com.practicum.playlistmaker.data.repository.appSettings.SEARCH_STORY_KEY
 import com.practicum.playlistmaker.data.repository.appSettings.SEARCH_STORY_PREFERENCE
-import com.practicum.playlistmaker.data.repository.appSettings.TRACK_TO_PLAYER_KEY
 import com.practicum.playlistmaker.data.repository.appSettings.storyPreference
-import com.practicum.playlistmaker.data.repository.jsonconverter.JsonConverter
+import com.practicum.playlistmaker.domain.jsonconverter.JsonConverter
 import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.presentation.presentationKeys.SearchStoryKeys.TRACK_TO_PLAYER_KEY
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -64,7 +64,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     private lateinit var searchRunnable: Runnable
     private lateinit var searchingProgressBar: ProgressBar
 
-    private val searchIteractor = Creator.providerTracksInteractor()
+    private val searchInteractor = Creator.providerTracksInteractor()
 
     private var isClickAllowed = true
     //searching placeholder

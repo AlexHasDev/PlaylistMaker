@@ -2,22 +2,22 @@ package com.practicum.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import com.practicum.playlistmaker.domain.models.Track
+import androidx.appcompat.app.AppCompatActivity
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.repository.playerImpl.playerManagerImpl.PlayerManagerImpl
-import com.practicum.playlistmaker.data.repository.utils.DateUtils
-import com.practicum.playlistmaker.data.repository.appSettings.TRACK_TO_PLAYER_KEY
-import com.practicum.playlistmaker.data.repository.jsonconverter.JsonConverter
-import com.practicum.playlistmaker.data.repository.utils.GlideUtils
+import com.practicum.playlistmaker.domain.jsonconverter.JsonConverter
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.repository.player.playerManger.PlayerState
 import com.practicum.playlistmaker.domain.usecase.PlayerManageUseCase
+import com.practicum.playlistmaker.presentation.presentationKeys.SearchStoryKeys.TRACK_TO_PLAYER_KEY
+import com.practicum.playlistmaker.presentation.ui.utils.DateUtils
+import com.practicum.playlistmaker.presentation.ui.utils.GlideUtils
 
 class PlayerTrackActivity : AppCompatActivity() {
 
@@ -43,7 +43,6 @@ class PlayerTrackActivity : AppCompatActivity() {
     private var timeForProgress: Long = 0L
     private var timeThread = Thread()
     var playerState = PlayerState()
-    private var player = PlayerManagerImpl(mediaPlayer = mediaPlayer, playerState = playerState)
     lateinit var playerManageUseCase: PlayerManageUseCase
 
     @SuppressLint("MissingInflatedId")
@@ -82,7 +81,7 @@ class PlayerTrackActivity : AppCompatActivity() {
         val trackForPlayer = JsonConverter.trackFromJson(jsonTrack = receivedIntent)
 
         //useCase
-        playerManageUseCase = PlayerManageUseCase(player, trackForPlayer)
+        playerManageUseCase = Creator.playerManageUseCase(mediaPlayer, playerState, trackForPlayer)
 
         fillTrackContent(track = trackForPlayer)
     }
@@ -115,7 +114,7 @@ class PlayerTrackActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        player.pausePlayer()
+        playerManageUseCase.pausePlayer()
     }
 
     override fun onDestroy() {

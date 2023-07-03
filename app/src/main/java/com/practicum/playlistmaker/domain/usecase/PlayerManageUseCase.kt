@@ -11,4 +11,8 @@ class PlayerManageUseCase(private val playerManager: PlayerManager, private val 
     fun prepare(){
         playerManager.preparePlayerForStart(track = this.track)
     }
+
+    fun pausePlayer() {
+        playerManager.pausePlayer()
+    }
 }

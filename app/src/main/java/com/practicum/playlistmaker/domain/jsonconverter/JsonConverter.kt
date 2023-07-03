@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.data.repository.jsonconverter
+package com.practicum.playlistmaker.domain.jsonconverter
 
 import com.google.gson.Gson
 import com.practicum.playlistmaker.domain.models.Track

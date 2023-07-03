@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 
-const val TRACK_TO_PLAYER_KEY = "TRACK_TO_PLAYER"
+
 const val SETTINGS_PREFERENCE = "SETTINGS_PREFERENCE"
 const val SETTINGS_KEY_FOR_EDIT = "SETTINGS_KEY_FOR_EDIT"
 const val SEARCH_STORY_PREFERENCE = "SEARCH_STORY_PREFERENCE"

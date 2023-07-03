@@ -8,7 +8,8 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
 
 
     override fun searchTracks(expression: String, consumer: TracksInteractor.TracksConsumer) {
-        val t = Thread{ consumer.consume(repository.searchTracks(expression))
+        val t = Thread {
+            consumer.consume(repository.searchTracks(expression))
         }
         t.start()
     }

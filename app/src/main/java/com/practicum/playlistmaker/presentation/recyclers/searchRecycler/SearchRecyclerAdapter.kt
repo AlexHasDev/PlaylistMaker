@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.models.Track
-import com.practicum.playlistmaker.data.repository.utils.DateUtils
+import com.practicum.playlistmaker.presentation.ui.utils.DateUtils
 
 class SearchRecyclerAdapter(
     private val adapterTrackList: ArrayList<Track>,
