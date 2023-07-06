@@ -33,7 +33,6 @@ import com.practicum.playlistmaker.data.repository.sharedprefs.CreateSharedPrefe
 import com.practicum.playlistmaker.data.repository.appSettings.SEARCH_STORY_KEY
 import com.practicum.playlistmaker.data.repository.appSettings.SEARCH_STORY_PREFERENCE
 import com.practicum.playlistmaker.data.repository.appSettings.storyPreference
-import com.practicum.playlistmaker.domain.jsonconverter.JsonConverter
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.presentationKeys.SearchStoryKeys.TRACK_TO_PLAYER_KEY
 import okhttp3.OkHttpClient
@@ -55,6 +54,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
     //ui elements
     private lateinit var arrowBack: ImageView
+
     //search
     private lateinit var searchRecycler: RecyclerView
     private lateinit var searchResults: ArrayList<Track>
@@ -67,6 +67,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     private val searchInteractor = Creator.providerTracksInteractor()
 
     private var isClickAllowed = true
+
     //searching placeholder
     private lateinit var placeholderText: TextView
     private lateinit var placeholder: LinearLayout
@@ -138,7 +139,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
         if (savedInstanceState != null) {
             defaultSearchText = savedInstanceState.getString(SEARCH_STATE, defaultSearchText)
         }
-            defaultSearchText = inputEditSearchText.toString()
+        defaultSearchText = inputEditSearchText.toString()
 
 
         clearButton.setOnClickListener {
@@ -158,7 +159,7 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
                 searchDebounce()
 
-                if(inputEditSearchText.text.toString() == "")
+                if (inputEditSearchText.text.toString() == "")
                     clearSearchResults()
             }
 
@@ -179,48 +180,48 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
     }
 
     private fun search() {
-        if (searchStoryView.visibility == View.GONE){
+        if (searchStoryView.visibility == View.GONE) {
             if (inputEditSearchText.text.isNotEmpty()) {
                 searchText = inputEditSearchText.text.toString()
                 clearSearchResults()
                 placeholder.visibility = View.GONE
                 searchingProgressBar.visibility = View.VISIBLE
             }
-        iTunesService.getSong(searchText.trim())
-            .enqueue(object : Callback<TracksSearchResponse> {
-                override fun onResponse(
-                    call: Call<TracksSearchResponse>,
-                    response: Response<TracksSearchResponse>
-                ) {
-                    if (searchText.isNotEmpty()) {
-                        searchingProgressBar.visibility = View.GONE
-                        when (response.code()) {
-                            200 -> if (response.body()?.results!!.isNotEmpty()) {
-                                searchResults.clear()
-                                searchResults.addAll(response.body()?.results!!)
-                                searchRecycler.adapter =
-                                    SearchRecyclerAdapter(searchResults, this@SearchActivity)
-                                placeholder.visibility = View.GONE
-                            } else {
-                                setPlaceholder(searchResults = searchResults, onConnect = true)
-                            }
+            iTunesService.getSong(searchText.trim())
+                .enqueue(object : Callback<TracksSearchResponse> {
+                    override fun onResponse(
+                        call: Call<TracksSearchResponse>,
+                        response: Response<TracksSearchResponse>
+                    ) {
+                        if (searchText.isNotEmpty()) {
+                            searchingProgressBar.visibility = View.GONE
+                            when (response.code()) {
+                                200 -> if (response.body()?.results!!.isNotEmpty()) {
+                                    searchResults.clear()
+                                    searchResults.addAll(response.body()?.results!!)
+                                    searchRecycler.adapter =
+                                        SearchRecyclerAdapter(searchResults, this@SearchActivity)
+                                    placeholder.visibility = View.GONE
+                                } else {
+                                    setPlaceholder(searchResults = searchResults, onConnect = true)
+                                }
 
-                            else -> {
-                                setPlaceholder(searchResults = searchResults, onConnect = true)
+                                else -> {
+                                    setPlaceholder(searchResults = searchResults, onConnect = true)
 
+                                }
                             }
                         }
                     }
-                }
 
-                override fun onFailure(call: Call<TracksSearchResponse>, t: Throwable) {
-                    searchingProgressBar.visibility = View.GONE
-                    setPlaceholder(searchResults = searchResults, onConnect = false)
-                    Log.d(TAG, t.toString())
-                }
+                    override fun onFailure(call: Call<TracksSearchResponse>, t: Throwable) {
+                        searchingProgressBar.visibility = View.GONE
+                        setPlaceholder(searchResults = searchResults, onConnect = false)
+                        Log.d(TAG, t.toString())
+                    }
 
-            })
-    }
+                })
+        }
     }
 
     private fun clearSearchStory() {
@@ -247,23 +248,23 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
     private fun setPlaceholder(searchResults: ArrayList<Track>, onConnect: Boolean) {
         searchResults.clear()
-            if (onConnect) {
-                searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
-                placeholder.visibility = View.VISIBLE
-                placeholderText.text = getString(R.string.nothing_found)
-                placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_light))
-                searchRefreshButton.visibility = View.GONE
+        if (onConnect) {
+            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
+            placeholder.visibility = View.VISIBLE
+            placeholderText.text = getString(R.string.nothing_found)
+            placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_light))
+            searchRefreshButton.visibility = View.GONE
 
-            } else {
-                searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
-                placeholder.visibility = View.VISIBLE
-                placeholderText.text = getString(R.string.connect_problem)
-                placeholderImage.setImageDrawable(getDrawable(R.drawable.practicum_problem_light))
-                searchRefreshButton.visibility = View.VISIBLE
-                searchRefreshButton.setOnClickListener {
-                    search()
-                }
+        } else {
+            searchRecycler.adapter = SearchRecyclerAdapter(this.searchResults, this)
+            placeholder.visibility = View.VISIBLE
+            placeholderText.text = getString(R.string.connect_problem)
+            placeholderImage.setImageDrawable(getDrawable(R.drawable.practicum_problem_light))
+            searchRefreshButton.visibility = View.VISIBLE
+            searchRefreshButton.setOnClickListener {
+                search()
             }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -281,33 +282,33 @@ class SearchActivity : AppCompatActivity(), SearchRecyclerAdapter.TrackListener 
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(track: Track) {
-        if(isClickAllowed) {
+        if (isClickAllowed) {
             clickDebounce()
             CreateSharedPreferences.saveSearchStoryPreference(track)
             val trackIntent = Intent(this, PlayerTrackActivity::class.java)
-            trackIntent.putExtra(TRACK_TO_PLAYER_KEY, JsonConverter.trackToJson(track))
+            trackIntent.putExtra(TRACK_TO_PLAYER_KEY, track)
             startActivity(trackIntent)
         }
     }
 
     private fun searchDebounce() {
         mainHandler.removeCallbacks(searchRunnable)
-        if(inputEditSearchText.text.toString() != "") {
+        if (inputEditSearchText.text.toString() != "") {
             mainHandler.postDelayed(searchRunnable, SEARCH_DELAY)
         }
     }
 
-    private fun clickDebounce() : Boolean{
+    private fun clickDebounce(): Boolean {
         val current = isClickAllowed
-        if (isClickAllowed){
+        if (isClickAllowed) {
             isClickAllowed = false
-            mainHandler.postDelayed({isClickAllowed = true}, CLICK_DELAY)
+            mainHandler.postDelayed({ isClickAllowed = true }, CLICK_DELAY)
         }
         return current
     }
 
 
-    private fun clearSearchResults(){
+    private fun clearSearchResults() {
         searchResults.clear()
         searchRecycler.adapter = SearchRecyclerAdapter(searchResults, this)
     }

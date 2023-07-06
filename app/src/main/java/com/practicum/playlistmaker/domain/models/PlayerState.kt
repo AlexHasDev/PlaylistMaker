@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.domain.repository.player.playerManger
+package com.practicum.playlistmaker.domain.models
 
 class PlayerState private constructor(var state: Int) {
 

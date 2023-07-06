@@ -3,7 +3,7 @@ package com.practicum.playlistmaker.data.repository.playerImpl.playerManagerImpl
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.domain.repository.player.playerManger.PlayerManager
-import com.practicum.playlistmaker.domain.repository.player.playerManger.PlayerState
+import com.practicum.playlistmaker.domain.models.PlayerState
 
 
 class PlayerManagerImpl(
@@ -42,6 +42,10 @@ class PlayerManagerImpl(
                 startPlayer()
             }
         }
+    }
+
+    override fun getCurrentPosition() : Long {
+        return mediaPlayer.currentPosition.toLong()
     }
 }
 

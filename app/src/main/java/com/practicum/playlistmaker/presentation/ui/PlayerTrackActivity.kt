@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,9 +10,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.domain.jsonconverter.JsonConverter
 import com.practicum.playlistmaker.domain.models.Track
-import com.practicum.playlistmaker.domain.repository.player.playerManger.PlayerState
+import com.practicum.playlistmaker.domain.models.PlayerState
 import com.practicum.playlistmaker.domain.usecase.PlayerManageUseCase
 import com.practicum.playlistmaker.presentation.presentationKeys.SearchStoryKeys.TRACK_TO_PLAYER_KEY
 import com.practicum.playlistmaker.presentation.ui.utils.DateUtils
@@ -39,7 +37,7 @@ class PlayerTrackActivity : AppCompatActivity() {
 
     //player
     lateinit var mainHandler: Handler
-    var mediaPlayer = MediaPlayer()
+    //var mediaPlayer = MediaPlayer()
     private var timeForProgress: Long = 0L
     private var timeThread = Thread()
     var playerState = PlayerState()
@@ -77,11 +75,11 @@ class PlayerTrackActivity : AppCompatActivity() {
         mainHandler = Handler(Looper.getMainLooper())
 
         //loadTrack
-        val receivedIntent = intent.getStringExtra(TRACK_TO_PLAYER_KEY)
-        val trackForPlayer = JsonConverter.trackFromJson(jsonTrack = receivedIntent)
+        val receivedIntent = intent.getParcelableExtra(TRACK_TO_PLAYER_KEY) ?: Track()
+        val trackForPlayer = receivedIntent
 
         //useCase
-        playerManageUseCase = Creator.playerManageUseCase(mediaPlayer, playerState, trackForPlayer)
+        playerManageUseCase = Creator.playerManageUseCase(playerState, trackForPlayer)
 
         fillTrackContent(track = trackForPlayer)
     }
@@ -125,7 +123,7 @@ class PlayerTrackActivity : AppCompatActivity() {
     private fun uiTrackProgressThread(): Runnable {
         return object : Runnable {
             override fun run() {
-                timeForProgress = if(playerState.state == PlayerState.STATE_PREPARED) 0L else mediaPlayer.currentPosition.toLong()
+                timeForProgress = if(playerState.state == PlayerState.STATE_PREPARED) 0L else playerManageUseCase.getCurrentPosition()
                 trackTime.text = DateUtils.changeDateFormat(timeForProgress.toString())
                 changePlayAndPauseButtonFromStatus()
                 mainHandler.postDelayed(this, REQUEST_TIME_TRACK_DELAY)

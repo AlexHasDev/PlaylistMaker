@@ -5,14 +5,19 @@ import com.practicum.playlistmaker.domain.repository.player.playerManger.PlayerM
 
 class PlayerManageUseCase(private val playerManager: PlayerManager, private val track: Track?) {
 
-    fun turnOnController(){
+    fun turnOnController() {
         playerManager.playbackControl()
     }
-    fun prepare(){
+
+    fun prepare() {
         playerManager.preparePlayerForStart(track = this.track)
     }
 
     fun pausePlayer() {
         playerManager.pausePlayer()
+    }
+
+    fun getCurrentPosition() : Long {
+        return playerManager.getCurrentPosition()
     }
 }

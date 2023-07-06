@@ -58,7 +58,6 @@ class SearchRecyclerAdapter(
 
         holder.bindImage(adapterTrackList[position])
         holder.itemView.setOnClickListener {
-
             trackListener.onClick(adapterTrackList[position])
         }
     }

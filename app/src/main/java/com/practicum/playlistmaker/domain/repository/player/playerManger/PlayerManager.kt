@@ -8,4 +8,5 @@ interface PlayerManager {
     fun pausePlayer()
     fun preparePlayerForStart(track: Track?)
     fun playbackControl()
+    fun getCurrentPosition() : Long
 }
